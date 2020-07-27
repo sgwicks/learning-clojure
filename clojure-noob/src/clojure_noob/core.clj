@@ -4,4 +4,150 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println "I'm a little teapot"))
+  (println "I'm a big teapot"))
+
+(defn no-params
+  []
+  "I have no parameters")
+
+(defn x-chop
+  ([name chop]
+  (str "I " chop "-chop " name))
+  
+  ([name]
+    (str "I karate-chop " name))
+
+  ([]
+    (str "I karate-chop John"))
+    )
+
+  (defn like
+    [thing]
+    (str "I like " thing))
+
+  (defn things-i-like
+    [item & things]
+    (nth (map like things) item))
+
+  (defn inc-maker
+    [inc-by]
+    #(+ % inc-by))
+
+  (defn verbose-inc-maker
+    [inc-by]
+    (fn [num] (+ num inc-by)))
+
+  (def asym-hobbit-body-parts [
+      {:name "head" :size 3}
+      {:name "left-eye" :size 1}
+      {:name "left-ear" :size 1}
+      {:name "mouth" :size 1}
+      {:name "nose" :size 1}
+      {:name "neck" :size 2}
+      {:name "left-shoulder" :size 3}
+      {:name "left-upper-arm" :size 3}
+      {:name "chest" :size 10}
+      {:name "back" :size 10}
+      {:name "left-forearm" :size 3}
+      {:name "abdomen" :size 6}
+      {:name "left-kidney" :size 1}
+      {:name "left-hand" :size 2}
+      {:name "left-knee" :size 2}
+      {:name "left-thigh" :size 4}
+      {:name "left-lower-leg" :size 3}
+      {:name "left-achilles" :size 1}
+      {:name "left-foot" :size 2}
+      ])
+
+  (defn matching-part
+    [part]
+    {:name (clojure.string/replace (:name part) #"^left-" "right-")
+    :size (:size part)})
+
+  (defn symmetrize-body-parts
+    [parts-vector]
+    (loop [remaining-parts parts-vector
+      final-body-parts []]
+      (if (empty? remaining-parts)
+        final-body-parts
+        (let [[part & remaining] remaining-parts]
+          (recur remaining
+          (into final-body-parts
+            (set [part (matching-part part)])))))))
+
+  (defn reduce-body-parts
+    [body-parts]
+    (reduce (fn [final-body-parts part]
+        (into final-body-parts (set [part (matching-part part)])))
+      []
+      body-parts))
+
+  (defn hit
+    [asym-body-parts]
+    (let [
+      sym-parts (reduce-body-parts asym-body-parts)
+      body-part-size-sum (reduce + (map :size sym-parts))
+      target (rand body-part-size-sum)
+        ]
+      (loop [
+        [part & remaining] sym-parts
+        accumulated-size (:size part)
+          ]
+          (if (> accumulated-size target)
+            part
+          (recur remaining (+ accumulated-size (:size (first remaining))))))))
+
+  (defn plus-100
+    [num]
+    (+ num 100))
+
+  (defn dec-maker
+    [dec-by]
+    #(- % dec-by))
+
+  (defn verbose-dec-maker
+    [dec-by]
+    (fn [num] (- num dec-by)))
+
+  (defn mapset
+    [func vector]
+    (set (map func vector))
+    )
+
+  (def alien-body-parts [
+    {:name "first-leg"}
+    {:name "first-eye"}
+    {:name "first-arm"}
+    {:name "head"}
+    {:name "torso"}
+  ])
+
+  (defn new-part
+    [part prefix]
+    {:name (clojure.string/replace (:name part) #"^first-" prefix)}
+    )
+
+  (defn complete-alien
+    [body-parts]
+    (loop [
+      remaining-parts body-parts
+      final-body-parts []
+        ]
+      (if (empty? remaining-parts)
+        final-body-parts
+        (let [
+          [part & remaining] remaining-parts
+        ]
+          (recur remaining
+            (into final-body-parts (set [
+              part
+              (new-part part "second-") 
+              (new-part part "third-")
+              (new-part part "fourth-")
+              (new-part part "fifth-")
+                ]))
+            )
+          )
+        )
+      )
+    )
