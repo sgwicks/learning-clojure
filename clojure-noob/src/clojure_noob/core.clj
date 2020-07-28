@@ -151,3 +151,39 @@
         )
       )
     )
+
+  (def old-map
+    {:a "include this" :b "include this" :c "not this"}
+    )
+
+  (defn create-new-map
+    [new-map [key value]]
+  (if (= "include this" value)
+    (assoc new-map key value)
+    new-map
+  )
+    )
+
+  (def maps
+    [{:a 1 :b 2} {:a 2 :b 3} {:a 3 :b 4}]
+    )
+
+  (defn add-values-to-map
+    [map [key value]]
+    (assoc map key value)
+    )
+
+  (defn add-values-to-maps
+    [maps values]
+    (reduce (fn [new-maps map]
+      (conj new-maps (add-values-to-map map values)))
+      []
+      maps)
+    )
+
+    ; (defn reduce-body-parts2
+    ;   [body-parts]
+    ;   (reduce (fn [final-body-parts part]
+    ;       (into final-body-parts (set [part (matching-part part)])))
+    ;     []
+    ;     body-parts))
